@@ -36,7 +36,7 @@ function esc(s) {
    TAMIL_LIVE in assets/js/i18n.js (see HANDOFF.md, "Tamil"). While it is
    off, generated pages carry no Tamil at all and the admin hides the Tamil
    title field. */
-const TAMIL_LIVE = false;
+const TAMIL_LIVE = true;
 
 /* An English string plus its Tamil counterpart, in the form i18n.js reads:
    the per-element data-ta wins over the shared dictionary, so generated

@@ -278,7 +278,7 @@ this rebuild set out to fix simply survives at the domain level.
 ### How the archive is built
 
 `data/cases.json` is the source of truth: one entry per case with its month,
-year, title (plus a Tamil title once Tamil is on), topic, page images and card image. The
+year, English and Tamil titles, topic, page images and card image. The
 archive on `case-of-the-month.html` and the "Latest cases" list on
 `index.html` are **generated** into the blocks between
 `<!-- cases:archive:start -->` / `<!-- cases:latest:start -->` and their
@@ -304,7 +304,7 @@ item in the viewer and page through before moving to the next case.
 ### How publishing works
 
 The clinic signs in at `/admin/`, drops in the month's PDF (or a JPG/PNG),
-fills in month, year, title and topic (plus a Tamil title once Tamil is on), and presses
+fills in month, year, title, optional Tamil title and topic, and presses
 Publish. The browser renders the PDF to 1236px-wide JPEG pages with pdf.js
 (loaded from jsDelivr, pinned to 6.3.289), so the server only ever receives
 images. The API validates them, names each file by its content hash (so a
@@ -364,25 +364,46 @@ checking `git status` for work of your own).
 - **`behavior: 'auto'` is not instant** when the page has CSS
   `scroll-behavior: smooth`. Use `'instant'` to really jump.
 
-## 11. Tamil (switched off: "coming soon")
+## 11. Tamil
 
-The Tamil version is **not live yet**. The top-bar toggle is kept where
-visitors expect it, tagged "Soon", and opens a short note saying the Tamil
-version is being prepared. Nothing is translated, the dictionary
-(`assets/js/i18n-data.js`) is an empty placeholder that is never loaded, and
-generated pages carry no Tamil. The admin hides the Tamil title field.
+Tamil is **on**: `TAMIL_LIVE = true` in both `assets/js/i18n.js` and
+`api/_lib/cases.js` (they must match). Setting both to `false` turns the
+toggle back into a "Soon" note, hides the admin's Tamil title field and
+stops generated pages carrying Tamil; run `node tools/build-cases.js` and
+`python3 tools/bump_assets.py` after changing them.
 
-It is controlled by one switch that exists in two places, which must match:
+The toggle and dictionary are described at the top of `assets/js/i18n.js`.
+What changed and why:
 
-- `TAMIL_LIVE` in `assets/js/i18n.js` (what visitors get), and
-- `TAMIL_LIVE` in `api/_lib/cases.js` (generated pages and the admin).
+- **The dictionary loads only when Tamil is in use.** It is 300 KB (64 KB
+  gzipped) and English visitors never download it. A returning Tamil reader
+  gets `lang-ta` from the inline `<head>` script before first paint, so text
+  waits hidden instead of flashing English (i18n.css shows it after 2s
+  regardless).
+- **Generated content carries its own Tamil** in `data-ta`, so new cases
+  never need dictionary entries.
+- **`tools/i18n_audit.py`** lists English text with no Tamil entry, unused
+  entries, and Latin letters stuck to Tamil ones. Run it after changing any
+  page text: an edited English sentence silently loses its translation,
+  because the English text is the lookup key.
+- Citations on the doctors page (paper and talk titles, journals, degrees)
+  are deliberately English. Their entries map to themselves.
 
-**Switching it on** is prepared as a separate branch, `tamil-translation`,
-which sits one commit ahead of `main`: it sets both switches, adds the
-dictionary and the case titles, and rebuilds. Merge it, then run
-`node tools/build-cases.js` and `python3 tools/bump_assets.py` (the admin may
-have published cases on `main` in the meantime), `python3 tools/check.py`,
-and push.
+**Terminology, fixed across all 561 entries.** Keep to these:
+
+| English | Tamil | Not |
+|---|---|---|
+| clinical case | நிகழ்வு | வழக்கு (a legal case) |
+| cleft | பிளவு (அண்ணப் பிளவு) | வெடிப்பு (a crack) |
+| implant | உள்வைப்பு | பொருத்து (a fitting) |
+| craniofacial | மண்டை-முக | முக எலும்பியல் |
+| syndrome | நோய்க்குறி | நோய்க்குழு |
+| trachea | மூச்சுக்குழாய் | தொண்டைக் குழாய் |
+| the practice's name | ஷங்கர் டென்டல் & க்ரேனியோஃபேஷியல் சென்டர் (as on the clinic's own letterhead) | a translation |
+
+Tamil typography lives in `assets/css/i18n.css`: no letter-spacing or
+uppercase on Tamil text (tracking breaks its letter clusters apart), smaller
+and looser display headings, 13px minimum for small labels.
 
 ## 12. Motion and interaction added in this pass
 
@@ -397,4 +418,5 @@ and push.
 - The mobile menu's items enter in sequence.
 - Fixed along the way: back-to-top sat on the phone call bar (a media query
   placed before the base rule it was meant to override), the menu button
-  overflowed the header on 320px phones.
+  overflowed the header on 320px phones and in Tamil, and the Tamil "NABH"
+  stat was clipped.

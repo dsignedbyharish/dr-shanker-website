@@ -60,7 +60,7 @@ node tools/build-cases.js      # rebuild the case archive after editing data/cas
 ## Case of the Month admin
 
 The clinic adds each month's case at `/admin/`: upload the PDF, add the
-title and topic, publish. It commits to this
+title (and optionally the Tamil title) and topic, publish. It commits to this
 repo and the site updates in about a minute. Setup and internals are in
 HANDOFF.md §10.
 

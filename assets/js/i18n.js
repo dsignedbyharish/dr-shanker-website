@@ -21,7 +21,7 @@
      TAMIL_LIVE in api/_lib/cases.js (see HANDOFF.md, "Tamil"). While it is
      off, the toggle stays in the top bar marked "Soon" and explains that the
      Tamil version is being prepared, and nothing is ever translated. */
-  var TAMIL_LIVE = false;
+  var TAMIL_LIVE = true;
 
   var STORAGE_KEY = 'sdcc-lang';
   var root = document.documentElement;
