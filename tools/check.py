@@ -16,7 +16,7 @@ os.chdir(ROOT)
 
 # The live domain, which every canonical and og: URL must be absolute against.
 # Change this in one place if the domain ever changes.
-CANON_BASE = "https://www.shankerdentalcentremadurai.com/"
+CANON_BASE = "https://dentalmadurai.com/"
 
 # Exact-case index of every file. macOS is case-insensitive but the production
 # host is not, so `IP-rooms.JPG` referenced as `.jpg` passes locally and 404s
@@ -127,6 +127,15 @@ for path in sorted(glob.glob("*.html") + glob.glob("admin/*.html")):
             fail(path, "unversioned asset", ref)
         elif version != want:
             fail(path, "stale asset version", "%s (run tools/bump_assets.py)" % ref)
+
+# --- generated SEO metadata ------------------------------------------------
+# Titles, descriptions, share cards and structured data come from tools/seo.py.
+# A hand edit inside a head's seo block, or new FAQ text without a re-run,
+# leaves the structured data describing something the page no longer says.
+import subprocess
+r = subprocess.run([sys.executable, "tools/seo.py", "--check"], capture_output=True, text=True)
+if r.returncode != 0:
+    fail("(all pages)", "seo out of date", (r.stdout or r.stderr).strip())
 
 # --- generated case archive -------------------------------------------------
 # The Case of the Month blocks are rendered from data/cases.json. A hand edit

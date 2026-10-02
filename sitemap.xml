@@ -1,83 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://www.shankerdentalcentremadurai.com/case-of-the-month.html</loc>
-    <lastmod>2026-08-02</lastmod>
+    <loc>https://dentalmadurai.com/</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>1.0</priority>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/dr-shanker-mohan-cutout-hd.webp</image:loc><image:title>Dr Shanker Mohan, oral and maxillofacial surgeon, Madurai</image:title></image:image>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/outpatient-waiting-area-1-hd.webp</image:loc><image:title>Outpatient waiting area, Shanker Dental and Craniofacial Centre</image:title></image:image>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/operation-theatre-hd.webp</image:loc><image:title>Operating theatre, Shanker Dental and Craniofacial Centre</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/doctors.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.9</priority>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/dr-shanker-mohan-hd.webp</image:loc><image:title>Dr Shanker Mohan, MDS, FDSRCS, FFDRCS</image:title></image:image>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/dr-aijitha-shanker-hd.webp</image:loc><image:title>Dr Aijitha Shanker, MDS Orthodontia</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/treatments.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/contact.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.9</priority>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/outpatient-waiting-area-2-hd.webp</image:loc><image:title>Outpatient facility, Gandhi Nagar, Madurai</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/dental-and-facial-implants.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/orthodontics.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/maxillofacial-surgery.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/orthognathic-surgery.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/cleft-lip-and-palate-surgery.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/facial-trauma-surgery.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/tmj-surgery.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/craniofacial-surgery.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/oral-and-maxillofacial-pathology.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/facilities.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <priority>0.8</priority>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/dental-operating-suite-hd.webp</image:loc><image:title>Dental operating suite</image:title></image:image>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/opg-cephalometry-imaging-hd.webp</image:loc><image:title>Digital OPG and cephalometry unit</image:title></image:image>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/inpatient-room-1-hd.webp</image:loc><image:title>Air-conditioned in-patient room</image:title></image:image>
+    <image:image><image:loc>https://dr-shanker-website.vercel.app/assets/images/operation-theatre-hd.webp</image:loc><image:title>Integrated operating theatre</image:title></image:image>
+  </url>
+  <url>
+    <loc>https://dentalmadurai.com/case-of-the-month.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.shankerdentalcentremadurai.com/cleft-lip-and-palate-surgery.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/contact.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/craniofacial-surgery.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/dental-and-facial-implants.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/doctors.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/facial-trauma-surgery.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/facilities.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/maxillofacial-surgery.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/oral-and-maxillofacial-pathology.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/orthodontics.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/orthognathic-surgery.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/sitemap.html</loc>
-    <lastmod>2026-08-02</lastmod>
+    <loc>https://dentalmadurai.com/sitemap.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/tmj-surgery.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.shankerdentalcentremadurai.com/treatments.html</loc>
-    <lastmod>2026-08-02</lastmod>
-    <priority>0.9</priority>
   </url>
 </urlset>

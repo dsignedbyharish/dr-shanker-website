@@ -2,9 +2,9 @@
    POST  /api/admin/cases   → add a case: fields + page images + card image
    PATCH /api/admin/cases   → edit a case's fields, visibility, or document
 
-   Images arrive already rendered by the admin page (a PDF is drawn to JPEG in
-   the browser with pdf.js), so this function never parses a PDF. It checks
-   that each image really is a JPEG of sane size, names it by its content
+   Images arrive already rendered by the admin page (a PDF is drawn to WebP or
+   JPEG in the browser with pdf.js), so this function never parses a PDF. It checks
+   that each image really is a JPEG or WebP of sane size, names it by its content
    hash, and hands everything to the store to publish as one change. */
 'use strict';
 
@@ -18,17 +18,21 @@ const MAX_PAGES = 8;
 const MAX_IMAGE_BYTES = 2.5 * 1024 * 1024;
 const DIR = 'assets/images/cases/';
 
-function decodeJpeg(img, label) {
+/* JPEG everywhere; WebP from browsers that can encode it (about half the
+   size for the same poster). The extension follows the actual bytes. */
+function decodeImage(img, label) {
   if (!img || typeof img.data !== 'string') throw httpError(400, 'The ' + label + ' image is missing.');
   const buf = Buffer.from(img.data, 'base64');
-  if (buf.length < 1000 || buf[0] !== 0xff || buf[1] !== 0xd8 || buf[2] !== 0xff) {
+  const jpeg = buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff;
+  const webp = buf.length >= 12 && buf.toString('ascii', 0, 4) === 'RIFF' && buf.toString('ascii', 8, 12) === 'WEBP';
+  if (buf.length < 1000 || !(jpeg || webp)) {
     throw httpError(400, 'The ' + label + ' image could not be read. Please choose the file again.');
   }
   if (buf.length > MAX_IMAGE_BYTES) throw httpError(413, 'The ' + label + ' image is too large.');
   const w = parseInt(img.w, 10);
   const h = parseInt(img.h, 10);
   if (!(w >= 200 && w <= 4000 && h >= 150 && h <= 6000)) throw httpError(400, 'The ' + label + ' image has unexpected dimensions.');
-  return { buffer: buf, w: w, h: h, hash: crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8) };
+  return { buffer: buf, w: w, h: h, ext: webp ? '.webp' : '.jpg', hash: crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8) };
 }
 
 /* Page + card images for a case, with content-hashed names: /assets is
@@ -38,13 +42,13 @@ function documentFiles(id, body) {
   if (body.pages.length > MAX_PAGES) throw httpError(400, 'A case can have at most ' + MAX_PAGES + ' pages.');
   const files = [];
   const pages = body.pages.map(function (p, i) {
-    const img = decodeJpeg(p, 'page ' + (i + 1));
-    const file = DIR + id + '-p' + (i + 1) + '-' + img.hash + '.jpg';
+    const img = decodeImage(p, 'page ' + (i + 1));
+    const file = DIR + id + '-p' + (i + 1) + '-' + img.hash + img.ext;
     files.push({ path: file, buffer: img.buffer });
     return { src: file, w: img.w, h: img.h };
   });
-  const cardImg = decodeJpeg(body.card, 'card');
-  const cardPath = DIR + id + '-card-' + cardImg.hash + '.jpg';
+  const cardImg = decodeImage(body.card, 'card');
+  const cardPath = DIR + id + '-card-' + cardImg.hash + cardImg.ext;
   files.push({ path: cardPath, buffer: cardImg.buffer });
   const cropY = Math.min(0.6, Math.max(0, Number(body.cropY) || 0));
   return { files: files, pages: pages, card: { src: cardPath, w: cardImg.w, h: cardImg.h }, cropY: Math.round(cropY * 1000) / 1000 };
@@ -106,8 +110,8 @@ module.exports = async function handler(req, res) {
         next = Object.assign(next, { pages: doc.pages, card: doc.card, cropY: doc.cropY });
       } else if (body.card) {
         /* Re-cropped card, same document. */
-        const cardImg = decodeJpeg(body.card, 'card');
-        const cardPath = DIR + current.id + '-card-' + cardImg.hash + '.jpg';
+        const cardImg = decodeImage(body.card, 'card');
+        const cardPath = DIR + current.id + '-card-' + cardImg.hash + cardImg.ext;
         files = [{ path: cardPath, buffer: cardImg.buffer }];
         const cropY = Math.min(0.6, Math.max(0, Number(body.cropY) || 0));
         next = Object.assign(next, { card: { src: cardPath, w: cardImg.w, h: cardImg.h }, cropY: Math.round(cropY * 1000) / 1000 });

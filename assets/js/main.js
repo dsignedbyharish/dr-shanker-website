@@ -425,9 +425,11 @@
      screen is marked current, and the row keeps that chip in view. Pages
      with fewer than three sections do not get one. It lives inside the
      consent-gated content, so it only appears once the gate is passed.
+     The case archive is skipped: its own year groups and topic filter already
+     do this job, and a second chip row there led with one case's title.
      ====================================================================== */
   var clinical = document.querySelector('.clinical');
-  if (clinical && 'IntersectionObserver' in window) {
+  if (clinical && !clinical.querySelector('[data-case-year]') && 'IntersectionObserver' in window) {
     var heads = Array.prototype.filter.call(clinical.querySelectorAll('h2'), function (h) {
       return !h.closest('.cta-band, .gate');
     });

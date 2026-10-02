@@ -2,7 +2,7 @@
    Case archive admin
    --------------------------------------------------------------------------
    Talks to /api/admin/session and /api/admin/cases. A PDF is rendered to
-   JPEG pages right here in the browser with pdf.js, so the server only ever
+   image pages right here in the browser with pdf.js, so the server only ever
    receives images: nothing uploaded is parsed or executed server-side.
    ========================================================================== */
 (function () {
@@ -676,13 +676,23 @@
   }
 
   /* ------------------------------------------------------------- publish */
-  function toJpeg(canvas, quality) {
+  /* WebP where the browser can encode it (Chrome, Edge, Firefox): about half
+     the size of the same page as JPEG. Elsewhere toBlob quietly returns PNG
+     for an unknown type, so support is checked once up front. */
+  var WEBP = (function () {
+    try {
+      var c = document.createElement('canvas'); c.width = c.height = 1;
+      return c.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    } catch (err) { return false; }
+  })();
+
+  function encodeImage(canvas, quality, type) {
     return new Promise(function (resolve) {
       canvas.toBlob(function (blob) {
         var r = new FileReader();
         r.onload = function () { resolve(String(r.result).split(',')[1]); };
         r.readAsDataURL(blob);
-      }, 'image/jpeg', quality);
+      }, type || 'image/jpeg', quality);
     });
   }
 
@@ -690,14 +700,15 @@
     var card = document.createElement('canvas');
     card.width = CARD_W; card.height = CARD_H;
     drawCard(card);
-    var cardJob = toJpeg(card, 0.74);
+    var cardJob = encodeImage(card, 0.74);
     if (!state.newDocument) return cardJob.then(function (c) { return { card: c }; });
 
-    /* Keep the whole upload under the hosting limit: step the JPEG quality
-       down until it fits, instead of failing a large scanned PDF. */
-    var qualities = [0.86, 0.78, 0.7, 0.6, 0.5];
+    /* Keep the whole upload under the hosting limit: step the quality down
+       until it fits, instead of failing a large scanned PDF. */
+    var qualities = WEBP ? [0.84, 0.78, 0.7, 0.6, 0.5] : [0.86, 0.78, 0.7, 0.6, 0.5];
+    var pageType = WEBP ? 'image/webp' : 'image/jpeg';
     function attempt(i) {
-      return Promise.all(state.pages.map(function (cv) { return toJpeg(cv, qualities[i]); })).then(function (pages) {
+      return Promise.all(state.pages.map(function (cv) { return encodeImage(cv, qualities[i], pageType); })).then(function (pages) {
         return cardJob.then(function (c) {
           var size = pages.reduce(function (s, p) { return s + p.length; }, c.length);
           if (size > MAX_PAYLOAD && i < qualities.length - 1) return attempt(i + 1);

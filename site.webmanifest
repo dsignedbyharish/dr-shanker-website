@@ -1,0 +1,15 @@
+{
+  "name": "Shanker Dental & Craniofacial Centre",
+  "short_name": "Shanker Dental",
+  "description": "Dental and maxillofacial hospital in Madurai: oral and maxillofacial surgery, orthodontics and dental implants.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "minimal-ui",
+  "lang": "en-IN",
+  "background_color": "#f5f8f3",
+  "theme_color": "#12403e",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

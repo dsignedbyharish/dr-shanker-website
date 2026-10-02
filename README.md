@@ -1,9 +1,15 @@
-# Shanker Dental & Craniofacial Centre — website
+# Dr Shanker Website
 
-A static, dependency-free rebuild of the practice's two existing sites
+The website of Shanker Dental & Craniofacial Centre, Madurai, in English and
+Tamil. A static, dependency-free rebuild of the practice's two older sites
 ([dentalmadurai.com](https://dentalmadurai.com/) and
 [shankerdentalcentremadurai.com](https://www.shankerdentalcentremadurai.com/)), which were mirrors of
 each other. All copy and imagery is taken from those sites.
+
+- Primary domain: **https://dentalmadurai.com** (every canonical points here;
+  `shankerdentalcentremadurai.com` is to 301 to it, see HANDOFF.md §9)
+- Live preview: https://dr-shanker-website.vercel.app
+- Repo: `dsignedbyharish/dr-shanker-website`, Vercel project `dr-shanker-website`
 
 ## Structure
 
@@ -31,7 +37,11 @@ sitemap.html                               Human-readable sitemap
 assets/css/style.css                       Single stylesheet (design tokens at the top)
 assets/js/main.js                          Nav, accordions, consent gate, lightbox
 assets/images/                             All imagery; thumbs/ holds gallery previews
-sitemap.xml, robots.txt, vercel.json
+assets/fonts/                              Self-hosted web fonts (fonts.css declares them)
+assets/images/og/                          1200x630 share cards, one per page
+sitemap.xml, robots.txt, llms.txt          Search engines and AI assistants
+site.webmanifest, favicon.ico              App icons (assets/icon-*.png)
+vercel.json                                Redirects from the old site, headers
 ```
 
 No build step and no framework — edit the HTML directly and refresh.
@@ -54,6 +64,7 @@ python3 tools/check.py         # pre-deploy validation; exits non-zero on any pr
 python3 tools/bump_assets.py   # re-stamp ?v= hashes after any CSS/JS edit
 python3 tools/sync_chrome.py   # push header/nav/footer from index.html to all pages
 python3 tools/i18n_audit.py    # language toggle: untranslated and unused entries
+python3 tools/seo.py           # titles, descriptions, share cards, structured data
 node tools/build-cases.js      # rebuild the case archive after editing data/cases.json
 ```
 
@@ -111,9 +122,13 @@ There are no inline styles in any page — layout tweaks use the utility classes
   than locked behind a button that could never be clicked.
 - **Old URLs.** `vercel.json` 301-redirects every page name from the previous site to its
   new equivalent, so existing search rankings and inbound links are preserved.
-- **Images.** Originals larger than 1600px were downscaled, and the case archive grid uses
-  560px thumbnails with the full image in the lightbox. `assets/images/` also contains some
-  unused files carried over from the old theme — safe to delete if you want a leaner repo.
+- **Images.** Served as WebP (about 55% smaller than the JPEGs they replaced; every
+  browser in use supports it). Originals larger than 1600px were downscaled, and the case
+  archive grid uses small card crops with the full poster in the lightbox. Share cards in
+  `assets/images/og/` stay JPEG, which every messaging app previews.
+- **SEO.** `tools/seo.py` owns each page's title, description, share tags and schema.org
+  data (clinic, doctors, procedures, breadcrumbs, FAQs). Edit the table there, never the
+  `<!-- seo:start -->` block in a page. HANDOFF.md §13 has the full picture.
 
 ## Deploying
 

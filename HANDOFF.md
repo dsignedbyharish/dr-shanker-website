@@ -1,4 +1,4 @@
-# Developer handoff — Shanker Dental & Craniofacial Centre
+# Developer handoff: Dr Shanker Website (Shanker Dental & Craniofacial Centre)
 
 Everything a new developer (or a new AI session) needs to pick this up cold.
 Read `README.md` first for the design system and file layout; this document
@@ -21,12 +21,14 @@ from the original page.
 
 | | |
 |---|---|
-| Repo | `dsignedbyharish/Shankar-Dental-Hospital` |
-| Live (preview host) | https://shankar-dental-hospital.vercel.app |
+| Repo | `dsignedbyharish/dr-shanker-website` (renamed from `Shankar-Dental-Hospital` on 2 Oct 2026; GitHub redirects the old URL) |
+| Vercel project | `dr-shanker-website` (renamed from `shankar-dental-hospital`) |
+| Live (preview host) | https://dr-shanker-website.vercel.app (the old `shankar-dental-hospital.vercel.app` still works) |
+| Primary domain | https://dentalmadurai.com, waiting on DNS (§9) |
 | `main` | deployed, stable — everything described here is on it |
 | Open branches | none — `redesign-sections` is merged and deleted |
 | Pages | 16 |
-| Assets | ~152 images + 44 gallery thumbnails, ~38 MB |
+| Assets | ~250 images, WebP since Oct 2026 (~18 MB, down from ~40 MB) |
 
 `main` is what is live, and it carries the editorial redesign — borderless
 layout, serif display type, parallax, before/after sliders, Dr Shanker in the
@@ -96,8 +98,9 @@ An earlier pass used surgical thumbnails there. The original site deliberately
 gated exactly those images; putting them on the landing page contradicts that.
 Photos stay behind the gate.
 
-**The social preview image is the building, not a clinical photo.** Every
-page's `og:image` is the hospital exterior, including on the surgical treatment
+**Share cards never show a clinical photo.** Every page has its own 1200x630
+card in `assets/images/og/` (portrait, facility photo or the 3D treatment
+illustration, never surgical photography), including the surgical treatment
 pages. `og:image` is what auto-previews when a link is shared on WhatsApp —
 the most common way this practice gets referred — so a surgical photograph
 there would walk straight past the consent gate, in the one context where the
@@ -167,28 +170,22 @@ commits.
 
 ## 6. Known constraints
 
-**Image resolution is the ceiling on visual quality.** These are the largest
-sources that exist:
-
-| Asset | Native size | Used for |
-|---|---|---|
-| `staffimg1.jpg` (Dr Shanker) | **238 × 203** | hero portrait, doctors page |
-| `staffimg2.jpg` (Dr Aijitha) | 237 × 206 | doctors page |
-| `Shankar-Hospital.jpg` | 335 × 496 | hero background |
-
-The hero portrait is framed at 268px rather than upscaled, and the hero
-backdrop carries a deliberate blur so the upscale reads as depth of field.
-**Ask the client for professional photography** — it is the single highest-value
-improvement available and no amount of CSS substitutes for it.
+**Photography.** The doctor portraits, hero cutout and facility photos were
+replaced with enhanced high-resolution versions in September 2026 (the `-hd`
+files). The clinical photographs on the treatment pages are still the old
+site's originals, so their resolution is the ceiling there.
 
 **Originals were downscaled.** Images over 1600px were resized in place before
 the first commit, so git history holds the reduced versions only. The true
 originals still exist on the two live source sites if ever needed.
 
-**`sitemap.xml`, `robots.txt` and the homepage `canonical` all point at
-`https://www.shankerdentalcentremadurai.com/`** — correct once the domain is
-pointed at Vercel, wrong until then. Do not submit the `.vercel.app` URL to
-Search Console while the canonical says otherwise.
+**Canonicals, `sitemap.xml`, `robots.txt` and `llms.txt` all name
+`https://dentalmadurai.com`**, correct once that domain points at Vercel.
+Share-card and schema image URLs deliberately use the `.vercel.app` host
+(`IMAGE_BASE` in `tools/seo.py`) because the main domain still serves the old
+site; after the cutover set `IMAGE_BASE = SITE`, run `tools/seo.py`, and
+update the image URLs in `sitemap.xml`. Do not submit the `.vercel.app` URL
+to Search Console.
 
 **The repo is public** and contains clinical patient photographs. They are
 already published on the client's live sites, so nothing new is exposed, but a
@@ -200,7 +197,7 @@ Worth a conversation with the client.
 Nothing in this repo is tied to any particular Claude account — it is ordinary
 files, git and a Vercel project. To continue you need:
 
-- **GitHub** — push access to `dsignedbyharish/Shankar-Dental-Hospital`
+- **GitHub** — push access to `dsignedbyharish/dr-shanker-website`
 - **Vercel** — the account the project is linked to, for deploys and the domain
 - **Domain registrar** — only when pointing the live domain at Vercel
 
@@ -226,52 +223,59 @@ files, git and a Vercel project. To continue you need:
 
 ## 8. Suggested next steps
 
-1. **Point the real domain at Vercel.** Everything else is waiting on this.
-   The canonicals, `sitemap.xml`, `robots.txt` and every `og:` URL already name
-   `shankerdentalcentremadurai.com`, while that domain still serves the old
-   site from Apache. Until it moves, the new site earns nothing.
-2. Request professional photography of both consultants and the premises.
-   Also replace the `og:image`: it is currently the 335×496 hospital exterior,
-   well under the 1200×630 that social cards want, so shared links render a
-   small, soft thumbnail.
-3. Decide whether the repo should be private.
-4. Consider WebP/AVIF versions of the gallery images — currently JPEG only.
+1. **Point dentalmadurai.com at Vercel** (§9). Everything in search is
+   waiting on this: until it moves, Google keeps ranking the old Apache site.
+2. **Claim the Google Business Profile** ("Shankar Mohan Dental & Craniofacial
+   Center", currently unclaimed, 4.3 stars from 24 reviews). Then set its
+   website to https://dentalmadurai.com, make its hours match the site (it
+   says 4:30pm evenings and 10am Sundays; the site says 4pm and 9:30am, so
+   the clinic must confirm which is right), fix its Tamil name, add photos,
+   and ask happy patients for reviews. For local searches this matters as
+   much as the website itself.
+3. Submit `sitemap.xml` in Google Search Console and Bing Webmaster Tools
+   once the domain is live.
+4. Renew `shankerdentalcentremadurai.com` before **17 Dec 2026** so its
+   redirect keeps working (dentalmadurai.com runs to Feb 2027).
+5. Decide whether the repo should be private.
 
 ## 9. Domain cutover
 
-The Vercel project has **no custom domain attached** — its domain list is only
-the three generated `*.vercel.app` names. So going live is two steps, and the
-order is not optional:
+**dentalmadurai.com is the primary domain** (chosen October 2026: a short,
+exact-match name for "dental Madurai"). `shankerdentalcentremadurai.com`, the
+other mirror, should 301 to it, so the two old sites' rankings consolidate on
+one address instead of splitting.
 
-> **Add the domain in Vercel *before* changing DNS.** If DNS points at Vercel
-> while the project does not claim the domain, Vercel serves an error page on
-> the practice's live address. That is worse than the old site, and patients
-> see it. The reverse order is safe.
+Both domains are registered with Good Domain Registry and use HostingRaja's
+nameservers (`ns155/ns156.hostingraja.org`), where the old Apache site lives
+at `103.92.235.55`. **Mail:** both domains' MX record points at the bare
+domain itself, so moving the bare domain's `A` record would also move mail.
+The old sites only ever listed Gmail addresses, but if anyone uses an
+`@dentalmadurai.com` mailbox, first point MX at `mail.dentalmadurai.com`
+(which already resolves to `103.92.235.55`) and wait an hour.
 
-1. **A day ahead**, drop the TTL on the existing records at the registrar to
-   300s. Rollback is then minutes rather than hours.
-2. **In Vercel**, add both `www.shankerdentalcentremadurai.com` and the apex
-   `shankerdentalcentremadurai.com`. Vercel prints the records to create.
-   Nothing changes for visitors yet — the domain simply isn't resolving there.
-3. **At the registrar**, replace the Apache records with Vercel's. Keep a copy
-   of the old values first; they are the rollback.
-4. **Wait for the certificate.** Vercel issues SSL after the domain resolves.
-   Until it does, HTTPS fails — check the domain in Vercel shows valid, not
-   just that the page loads.
-5. **Verify** the real domain serves the new site, and that `www` and apex
-   agree. `curl -sI https://www.shankerdentalcentremadurai.com/` should show a
-   Vercel header rather than `Server: Apache`.
-6. **Only then** submit `sitemap.xml` to Search Console. Submitting while the
-   canonical names a domain that isn't serving the site wastes the crawl.
-7. **Leave the old Apache hosting running** until step 5 passes. It is the
-   fallback, and the only remaining copy of the true full-size originals
-   (see §6).
+All four hostnames are added to the Vercel project first, so they show
+"Invalid configuration" until DNS changes. That order is deliberate: if DNS
+points at Vercel before the project claims the domain, patients get a Vercel
+error page.
 
-**Point `dentalmadurai.com` at the new site too — as a 301, not a copy.** It is
-the second of the two mirrored domains. Every canonical names
-`shankerdentalcentremadurai.com`, so `dentalmadurai.com` should redirect there
-rather than serve the same pages, otherwise the duplicate-content split that
-this rebuild set out to fix simply survives at the domain level.
+1. **A day ahead**, drop the TTL on the existing records to 300s, so a
+   rollback takes minutes. Keep a copy of the old values.
+2. **In HostingRaja's DNS zone editor** (keep their nameservers), for both
+   domains:
+   - `A` record for the bare domain (`@`): `76.76.21.21`
+   - `CNAME` for `www`: `cname.vercel-dns.com`
+   If Vercel's domain page shows different values, use those.
+3. **Wait for the certificates.** Vercel issues SSL once each name resolves.
+   Check the domains page shows all four as valid, not just that a page loads.
+4. **Verify:** `curl -sI https://dentalmadurai.com/` shows a Vercel header,
+   not `Server: Apache`; `www.dentalmadurai.com` and both
+   `shankerdentalcentremadurai.com` names answer with a redirect to
+   `https://dentalmadurai.com`; an old URL such as `/staff_details.html` lands
+   on `/doctors.html`.
+5. **Then** set `IMAGE_BASE = SITE` in `tools/seo.py`, re-run it, update the
+   image URLs in `sitemap.xml`, push, and submit the sitemap in Search Console.
+6. **Leave the old hosting running** for a few weeks as the fallback; it also
+   holds the only full-size copies of the old originals (§6).
 
 ## 10. Case of the Month and the admin panel
 
@@ -305,7 +309,8 @@ item in the viewer and page through before moving to the next case.
 
 The clinic signs in at `/admin/`, drops in the month's PDF (or a JPG/PNG),
 fills in month, year, title, optional Tamil title and topic, and presses
-Publish. The browser renders the PDF to 1236px-wide JPEG pages with pdf.js
+Publish. The browser renders the PDF to 1236px-wide pages with pdf.js (WebP
+where the browser can encode it, JPEG otherwise)
 (loaded from jsDelivr, pinned to 6.3.289), so the server only ever receives
 images. The API validates them, names each file by its content hash (so a
 replaced document always gets a new URL under the year-long `/assets` cache)
@@ -325,7 +330,7 @@ In the Vercel project, **Settings, Environment Variables**, Production:
 | Variable | Value |
 |---|---|
 | `ADMIN_PASSWORD` | The password the clinic signs in with. 8 characters or more. |
-| `GITHUB_TOKEN` | A GitHub **fine-grained** personal access token, repository access limited to `dsignedbyharish/Shankar-Dental-Hospital`, permission **Contents: Read and write**. Nothing else. |
+| `GITHUB_TOKEN` | A GitHub **fine-grained** personal access token, repository access limited to `dsignedbyharish/dr-shanker-website`, permission **Contents: Read and write**. Nothing else. (A token follows its repo through a rename.) |
 | `ADMIN_SESSION_SECRET` | Optional. Any long random string. If unset, sessions are signed with a key derived from the password, so changing the password signs everyone out anyway. |
 | `GITHUB_REPO`, `GITHUB_BRANCH` | Optional. Default to the repo above and `main`. |
 
@@ -366,44 +371,20 @@ checking `git status` for work of your own).
 
 ## 11. Tamil
 
-Tamil is **on**: `TAMIL_LIVE = true` in both `assets/js/i18n.js` and
-`api/_lib/cases.js` (they must match). Setting both to `false` turns the
-toggle back into a "Soon" note, hides the admin's Tamil title field and
-stops generated pages carrying Tamil; run `node tools/build-cases.js` and
-`python3 tools/bump_assets.py` after changing them.
+**The Tamil version is live** (switched on 2 October 2026). The top-bar toggle
+switches every page, the case archive and the admin's Tamil title field.
 
-The toggle and dictionary are described at the top of `assets/js/i18n.js`.
-What changed and why:
+It is controlled by one switch that exists in two places, which must match:
 
-- **The dictionary loads only when Tamil is in use.** It is 300 KB (64 KB
-  gzipped) and English visitors never download it. A returning Tamil reader
-  gets `lang-ta` from the inline `<head>` script before first paint, so text
-  waits hidden instead of flashing English (i18n.css shows it after 2s
-  regardless).
-- **Generated content carries its own Tamil** in `data-ta`, so new cases
-  never need dictionary entries.
-- **`tools/i18n_audit.py`** lists English text with no Tamil entry, unused
-  entries, and Latin letters stuck to Tamil ones. Run it after changing any
-  page text: an edited English sentence silently loses its translation,
-  because the English text is the lookup key.
-- Citations on the doctors page (paper and talk titles, journals, degrees)
-  are deliberately English. Their entries map to themselves.
+- `TAMIL_LIVE` in `assets/js/i18n.js` (what visitors get), and
+- `TAMIL_LIVE` in `api/_lib/cases.js` (generated pages and the admin).
 
-**Terminology, fixed across all 561 entries.** Keep to these:
-
-| English | Tamil | Not |
-|---|---|---|
-| clinical case | நிகழ்வு | வழக்கு (a legal case) |
-| cleft | பிளவு (அண்ணப் பிளவு) | வெடிப்பு (a crack) |
-| implant | உள்வைப்பு | பொருத்து (a fitting) |
-| craniofacial | மண்டை-முக | முக எலும்பியல் |
-| syndrome | நோய்க்குறி | நோய்க்குழு |
-| trachea | மூச்சுக்குழாய் | தொண்டைக் குழாய் |
-| the practice's name | ஷங்கர் டென்டல் & க்ரேனியோஃபேஷியல் சென்டர் (as on the clinic's own letterhead) | a translation |
-
-Tamil typography lives in `assets/css/i18n.css`: no letter-spacing or
-uppercase on Tamil text (tracking breaks its letter clusters apart), smaller
-and looser display headings, 13px minimum for small labels.
+Every visible string is a key in `assets/js/i18n-data.js` (636 entries).
+After changing page text, run `python3 tools/i18n_audit.py`: it lists any
+English that would show untranslated in Tamil mode. Glossary used throughout:
+case = நிகழ்வு, cleft = பிளவு, implant = உள்வைப்பு, craniofacial = மண்டை-முக,
+syndrome = நோய்க்குறி; the clinic name follows its letterhead,
+ஷங்கர் டென்டல் & க்ரேனியோஃபேஷியல் சென்டர்.
 
 ## 12. Motion and interaction added in this pass
 
@@ -420,3 +401,35 @@ and looser display headings, 13px minimum for small labels.
   placed before the base rule it was meant to override), the menu button
   overflowed the header on 320px phones and in Tamil, and the Tamil "NABH"
   stat was clipped.
+
+## 13. Search, AI answers and sharing (October 2026)
+
+- **`tools/seo.py`** writes every page's `<title>`, description, canonical,
+  Open Graph and Twitter tags, icons and one schema.org `@graph`: the clinic
+  as `Dentist` + `MedicalClinic` (address, map pin, hours, phones, services,
+  Google Business Profile in `sameAs`), both doctors as `Person` with their
+  credentials, `MedicalWebPage` + `MedicalProcedure` on treatment pages
+  (reviewed by the treating consultant), `BreadcrumbList` read from each
+  page's breadcrumb, and `FAQPage` read from its FAQ section. `check.py`
+  fails if any head is out of date.
+- **FAQ sections** on the homepage (8) and every treatment page (3 each)
+  answer the questions patients actually type into Google or ask an AI
+  assistant. Every answer restates facts already on the site; nothing is
+  invented. They sit outside the 18+ consent gate (no images), in English
+  and Tamil.
+- **`llms.txt`** is a plain summary of the clinic for AI assistants;
+  `robots.txt` explicitly welcomes the main search and AI crawlers and keeps
+  them out of `/admin` and `/api`.
+- **`sitemap.xml`** lists every page with image entries for the non-clinical
+  photos. The admin bumps the case archive and home `lastmod` on publish, so
+  keep `<lastmod>` directly after `<loc>`.
+- **Share cards** are rendered from an HTML template with headless Chrome
+  (1200x630 JPEG). To change one, re-render it under a new filename (the
+  `/assets` cache lasts a year) rather than editing the image.
+- **Performance:** images are WebP, fonts are self-hosted (no Google Fonts
+  request; Inter and Source Serif are preloaded), and the hero portrait went
+  from 505 KB to 68 KB.
+- **Name variants.** Google lists the clinic as "Shankar Mohan Dental &
+  Craniofacial Center"; the schema carries that and the other spellings
+  patients search for as `alternateName`, so search engines treat them as one
+  place.

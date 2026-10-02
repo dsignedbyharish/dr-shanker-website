@@ -690,9 +690,12 @@ address { font-style: normal; }
    across breakpoints and was the likely reason the previous sizing read as
    inconsistent. */
 .hero-figure { position: relative; z-index: 2; overflow: hidden; background: none; }
-/* Uncovered from the bottom as the page opens. */
-.js .hero-figure { clip-path: inset(0 0 100% 0); transition: clip-path 1300ms var(--ease-out) 120ms; }
-.js .hero-figure.in { clip-path: inset(0 0 0 0); }
+/* Uncovered from the bottom as the page opens. The clip sits on the image,
+   not on the observed .hero-figure: Chromium counts a fully clipped element
+   as never intersecting, so on phones (portrait below the fold) the reveal
+   never fired and the hero showed an empty panel. Same trap as .unmask. */
+.js .hero-portrait-stage { clip-path: inset(0 0 100% 0); transition: clip-path 1300ms var(--ease-out) 120ms; }
+.js .hero-figure.in .hero-portrait-stage { clip-path: inset(0 0 0 0); }
 
 .hero-portrait-stage {
   position: absolute; inset: 0;
@@ -808,6 +811,11 @@ address { font-style: normal; }
 .crumbs li + li::before { content: "/"; color: var(--ink-4); }
 .crumbs a { color: var(--ink-3); }
 .crumbs a:hover { color: var(--brand); }
+/* On phones the last crumb repeats the h1 directly below it and wrapped onto
+   a line of its own, so three-level trails stop at the parent. */
+@media (max-width: 680px) {
+  .crumbs li:last-child:not(:nth-child(2)) { display: none; }
+}
 
 /* ==========================================================================
    Cards & grids
@@ -1774,6 +1782,15 @@ a.card:hover .card-link svg { transform: translateX(5px); }
   /* The bar owns the bottom of the screen, so the page and the back-to-top
      button both have to clear it or they sit underneath. */
   body { padding-bottom: calc(57px + env(safe-area-inset-bottom, 0px)); }
+
+  /* With the call bar always on screen, the top bar's phone item is a
+     duplicate, and its spaced-out label pushed the language toggle onto a
+     third row. Phones get one row: opening hours, then the toggle. */
+  .topbar .wrap { flex-wrap: nowrap; gap: var(--sp-3); }
+  .topbar-list { flex-wrap: nowrap; gap: var(--sp-3); }
+  .topbar-list:first-child { flex: 1 1 auto; min-width: 0; }
+  .topbar-list:first-child li { min-width: 0; line-height: 1.35; }
+  .topbar-list .topbar-phone { display: none; }
 }
 
 /* Back to top */
@@ -1946,7 +1963,9 @@ a.card:hover .card-link svg { transform: translateX(5px); }
   .split { grid-template-columns: 1fr; }
   .split-media { order: -1; }
   .doc { grid-template-columns: 1fr; }
-  .doc-photo { max-width: 240px; }
+  /* The portraits are full resolution now, so they no longer need holding
+     to their old 240px source width. */
+  .doc-photo { max-width: 360px; }
   .doc-photo img { aspect-ratio: 4/5; }
 }
 
@@ -2205,7 +2224,7 @@ a.card:hover .card-link svg { transform: translateX(5px); }
   /* Anything driven by clip-path must land fully open, not stay masked —
      a mask that never animates is just hidden content. */
   .js .unmask img,
-  .js .hero-figure,
+  .js .hero-portrait-stage,
   .js .figure > .zoomable, .js .figure > img { clip-path: none !important; }
   .js .figure > figcaption { opacity: 1 !important; transform: none !important; }
   .js .reveal .li-ico, .js .stagger .li-ico { opacity: 1 !important; transform: none !important; }
@@ -2305,3 +2324,65 @@ a.card:hover .card-link svg { transform: translateX(5px); }
    At the 34ch lead width the four-line heading left the right half of the
    section empty. Two balanced lines across the section read as a title. */
 .section-lead.is-xwide { max-width: 46rem; }
+
+/* ==========================================================================
+   Frequently asked questions
+   --------------------------------------------------------------------------
+   Native <details>, so every answer works with scripts off and stays in the
+   page text that search engines and AI assistants read. tools/seo.py builds
+   the FAQPage structured data from this same markup, so the two never drift.
+   ========================================================================== */
+.faq { display: grid; gap: var(--sp-10); grid-template-columns: minmax(0, 1fr); }
+.faq-intro > p:last-child { color: var(--ink-3); max-width: 38ch; }
+.faq-intro h2 { margin-bottom: var(--sp-4); }
+.faq-list { border-top: 1px solid var(--line); interpolate-size: allow-keywords; }
+.faq-item { border-bottom: 1px solid var(--line); }
+.faq-item summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--sp-5);
+  padding-block: var(--sp-5); min-height: var(--tap);
+  font-size: var(--fs-lg); font-weight: var(--fw-semi); line-height: var(--lh-snug); color: var(--ink);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:hover { color: var(--brand); }
+.faq-item summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 4px; border-radius: var(--r-xs); }
+.faq-icon {
+  position: relative; flex: none; width: 32px; height: 32px; margin-top: -2px;
+  border-radius: 50%; background: var(--bg-alt);
+  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.faq-icon::before, .faq-icon::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; border-radius: 2px;
+  background: var(--brand); transform: translate(-50%, -50%);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); }
+.faq-item[open] .faq-icon { background: var(--brand); }
+.faq-item[open] .faq-icon::before, .faq-item[open] .faq-icon::after { background: #fff; }
+.faq-item[open] .faq-icon::after { transform: translate(-50%, -50%) rotate(0deg); }
+.faq-item summary:hover .faq-icon { transform: scale(1.06); }
+.faq-a { padding-bottom: var(--sp-6); padding-right: calc(32px + var(--sp-5)); color: var(--ink-2); }
+.faq-a p { margin: 0; max-width: 64ch; }
+.faq-a a { color: var(--brand); font-weight: var(--fw-semi); }
+.bg-alt .faq-icon { background: var(--bg-pure); }
+
+/* Smooth open/close where the browser can animate to height: auto. */
+.faq-item::details-content {
+  block-size: 0; overflow: clip;
+  transition: block-size var(--dur-slow) var(--ease-out), content-visibility var(--dur-slow) allow-discrete;
+}
+.faq-item[open]::details-content { block-size: auto; }
+
+@media (min-width: 900px) {
+  .faq { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--sp-16); align-items: start; }
+  .faq-intro { position: sticky; top: calc(var(--header-h, 88px) + var(--sp-8)); }
+}
+@media (max-width: 680px) {
+  .faq-item summary { font-size: var(--fs-md); gap: var(--sp-4); }
+  .faq-a { padding-right: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-item::details-content { transition: none; }
+  .faq-icon, .faq-icon::before, .faq-icon::after { transition: none; }
+}

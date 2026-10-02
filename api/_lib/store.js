@@ -30,7 +30,7 @@ function mode() {
 
 function githubConfig() {
   const token = process.env.GITHUB_TOKEN;
-  const repo = process.env.GITHUB_REPO || 'dsignedbyharish/Shankar-Dental-Hospital';
+  const repo = process.env.GITHUB_REPO || 'dsignedbyharish/dr-shanker-website';
   const branch = process.env.GITHUB_BRANCH || 'main';
   if (!token) {
     throw httpError(503, 'Publishing is not set up yet: GITHUB_TOKEN is missing from the Vercel project settings.');
