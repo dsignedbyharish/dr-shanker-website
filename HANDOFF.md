@@ -253,10 +253,14 @@ The old sites only ever listed Gmail addresses, but if anyone uses an
 `@dentalmadurai.com` mailbox, first point MX at `mail.dentalmadurai.com`
 (which already resolves to `103.92.235.55`) and wait an hour.
 
-All four hostnames are added to the Vercel project first, so they show
-"Invalid configuration" until DNS changes. That order is deliberate: if DNS
-points at Vercel before the project claims the domain, patients get a Vercel
-error page.
+**Add the domains in Vercel before touching DNS** (project
+`dr-shanker-website`, Settings, Domains): `dentalmadurai.com` as the
+production domain, and `www.dentalmadurai.com`,
+`shankerdentalcentremadurai.com` and `www.shankerdentalcentremadurai.com`
+each set to *Redirect to* `dentalmadurai.com` (308). They show "Invalid
+configuration" until DNS changes, and nothing changes for visitors. The order
+matters: if DNS points at Vercel before the project claims the domain,
+patients get a Vercel error page.
 
 1. **A day ahead**, drop the TTL on the existing records to 300s, so a
    rollback takes minutes. Keep a copy of the old values.
